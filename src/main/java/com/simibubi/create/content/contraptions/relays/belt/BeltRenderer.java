@@ -71,17 +71,6 @@ public class BeltRenderer extends SafeTileEntityRenderer<BeltTileEntity> {
 		boolean sideways = beltSlope == BeltSlope.SIDEWAYS;
 		boolean alongX = facing.getAxis() == Axis.X;
 
-		MatrixStacker msr = MatrixStacker.of(ms);
-		IVertexBuilder vb = buffer.getBuffer(RenderType.getSolid());
-		float renderTick = AnimationTickHolder.getRenderTick();
-
-		ms.push();
-		msr.centre();
-		msr.rotateY(AngleHelper.horizontalAngle(facing) + (upward ? 180 : 0) + (sideways ? 270 : 0));
-		msr.rotateZ(sideways ? 90 : 0);
-		msr.rotateX(!diagonal && beltSlope != BeltSlope.HORIZONTAL ? 90 : 0);
-		msr.unCentre();
-
 		if (downward || beltSlope == BeltSlope.VERTICAL && axisDirection == AxisDirection.POSITIVE) {
 			boolean b = start;
 			start = end;
@@ -103,34 +92,28 @@ public class BeltRenderer extends SafeTileEntityRenderer<BeltTileEntity> {
 			SpriteShiftEntry spriteShift =
 					diagonal ? AllSpriteShifts.BELT_DIAGONAL : bottom ? AllSpriteShifts.BELT_OFFSET : AllSpriteShifts.BELT;
 
-			int cycleLength = diagonal ? 12 : 16;
-			int cycleOffset = bottom ? 8 : 0;
-
-			// UV shift
-
 			beltBuffer.setupInstance(data -> {
 				float speed = te.getSpeed();
 				if (diagonal && (downward ^ alongX) || !sideways && !diagonal && alongX
 						|| sideways && axisDirection == AxisDirection.NEGATIVE)
 					speed = -speed;
 
-				Matrix4f m = new Matrix4f();
-				m.loadIdentity();
-				m.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(AngleHelper.horizontalAngle(facing) + (upward ? 180 : 0) + (sideways ? 270 : 0)));
-				m.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(sideways ? 90 : 0));
-				m.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(!diagonal && beltSlope != BeltSlope.HORIZONTAL ? 90 : 0));
-
 				data.setPosition(te.getPos())
-					.setModel(m)
+					.setRotation(
+							!diagonal && beltSlope != BeltSlope.HORIZONTAL ? 90 : 0,
+							-AngleHelper.horizontalAngle(facing) + (upward ? 180 : 0) + (sideways ? 270 : 0),
+							sideways ? 90 : 0
+					)
 					.setPackedLight(light)
-					.setRotationalSpeed(speed);
+					.setRotationalSpeed(speed)
+					.setScrollTexture(spriteShift)
+					.setScrollMult(diagonal ? 3f / 8f : 0.5f);
 			});
 
 			// Diagonal belt do not have a separate bottom model
 			if (diagonal)
 				break;
 		}
-		ms.pop();
 
 		if (te.hasPulley()) {
 			// TODO 1.15 find a way to cache this model matrix computation
@@ -139,7 +122,7 @@ public class BeltRenderer extends SafeTileEntityRenderer<BeltTileEntity> {
 				.rotateY();
 			if (sideways)
 				dir = Direction.UP;
-			msr = MatrixStacker.of(modelTransform);
+			MatrixStacker msr = MatrixStacker.of(modelTransform);
 			msr.centre();
 			if (dir.getAxis() == Axis.X)
 				msr.rotateY(90);
@@ -148,9 +131,9 @@ public class BeltRenderer extends SafeTileEntityRenderer<BeltTileEntity> {
 			msr.rotateX(90);
 			msr.unCentre();
 
-			RotatingBuffer superBuffer = CreateClient.kineticRenderer
+			RotatingBuffer rotatingBuffer = CreateClient.kineticRenderer
 				.renderDirectionalPartialInstanced(AllBlockPartials.BELT_PULLEY, blockState, dir, modelTransform);
-			KineticTileEntityRenderer.renderRotatingBuffer(te, superBuffer, light);
+			KineticTileEntityRenderer.renderRotatingBuffer(te, rotatingBuffer, light);
 		}
 
 		renderItems(te, partialTicks, ms, buffer, light, overlay);

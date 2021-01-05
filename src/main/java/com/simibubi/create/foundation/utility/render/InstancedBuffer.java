@@ -123,11 +123,6 @@ public abstract class InstancedBuffer<T> extends TemplateBuffer {
         });
     }
 
-    protected void addData(T instance) {
-        data.add(instance);
-        instanceCount++;
-    }
-
     protected abstract T newInstance();
 
     protected abstract int numAttributes();
@@ -138,7 +133,8 @@ public abstract class InstancedBuffer<T> extends TemplateBuffer {
         T instanceData = newInstance();
         setup.accept(instanceData);
 
-        addData(instanceData);
+        data.add(instanceData);
+        instanceCount++;
     }
 
     public void render() {
