@@ -39,7 +39,7 @@ minecraft {
             workingDirectory project.file('run')
             // property 'mixin.env.disableRefMap', 'true'
             arg '-mixin.config=create.mixins.json'
-//            jvmArgs '-XX:+UnlockCommercialFeatures'
+            jvmArgs '-XX:+UnlockCommercialFeatures'
             property 'forge.logging.console.level', 'info'
             property 'fml.earlyprogresswindow', 'false'
             mods {
@@ -130,7 +130,7 @@ dependencies {
     // runtimeOnly fg.deobf("slimeknights.mantle:Mantle:1.16.3-1.6.40")
     // runtimeOnly fg.deobf("slimeknights.tconstruct:TConstruct:1.16.3-3.0.1.24")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+//    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 }
 
 jar {

@@ -3,7 +3,7 @@ package com.simibubi.create.foundation.render.backend.gl;
 import com.simibubi.create.foundation.render.backend.Backend;
 import com.simibubi.create.foundation.render.backend.gl.shader.GlProgram;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL20;
 

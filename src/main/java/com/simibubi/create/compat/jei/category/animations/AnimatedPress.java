@@ -1,7 +1,5 @@
 package com.simibubi.create.compat.jei.category.animations;
 
-import static com.simibubi.create.foundation.utility.AnimationTickHolder.ticks;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.simibubi.create.AllBlockPartials;
 import com.simibubi.create.AllBlocks;

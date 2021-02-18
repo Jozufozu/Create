@@ -3,7 +3,7 @@ package com.simibubi.create.content.contraptions.components.actors;
 import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 import com.simibubi.create.foundation.render.backend.instancing.InstanceData;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedModel;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.BlockPos;
 
 import java.nio.ByteBuffer;

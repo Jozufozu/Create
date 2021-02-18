@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.render.backend.gl.BasicProgram;
 import com.simibubi.create.foundation.render.backend.gl.shader.ShaderCallback;
 import com.simibubi.create.foundation.render.backend.instancing.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -41,7 +41,7 @@ public class KineticRenderer extends InstancedTileRenderer<BasicProgram> {
 
         if (renderViewEntity == null) return;
 
-        BlockPos renderViewPosition = renderViewEntity.getPosition();
+        BlockPos renderViewPosition = renderViewEntity.getBlockPos();
 
         int dX = Math.abs(renderViewPosition.getX() - originCoordinate.getX());
         int dY = Math.abs(renderViewPosition.getY() - originCoordinate.getY());

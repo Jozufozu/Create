@@ -66,11 +66,6 @@ public class WrappedChunkProvider extends AbstractChunkProvider {
     }
 
     @Override
-    public void tick(BooleanSupplier p_217207_1_) {
-
-    }
-
-    @Override
     public String makeString() {
         return "WrappedChunkProvider";
     }

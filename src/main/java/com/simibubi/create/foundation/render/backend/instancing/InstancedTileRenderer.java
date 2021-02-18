@@ -8,11 +8,11 @@ import com.simibubi.create.foundation.render.backend.gl.shader.ShaderCallback;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import com.simibubi.create.foundation.utility.WorldAttached;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -136,7 +136,7 @@ public abstract class InstancedTileRenderer<P extends BasicProgram> {
     }
 
     public void clean() {
-        instances.keySet().stream().filter(TileEntity::isRemoved).forEach(instances::remove);
+        instances.keySet().removeIf(TileEntity::isRemoved);
     }
 
     public void invalidate() {

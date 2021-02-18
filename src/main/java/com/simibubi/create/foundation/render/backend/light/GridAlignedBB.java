@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.render.RenderMath;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.SectionPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
 import static com.simibubi.create.foundation.render.RenderMath.isPowerOf2;
 
@@ -92,7 +92,7 @@ public class GridAlignedBB {
                 minZ == maxZ;
     }
 
-    public void translate(Vec3i by) {
+    public void translate(Vector3i by) {
         translate(by.getX(), by.getY(), by.getZ());
     }
 
@@ -106,7 +106,7 @@ public class GridAlignedBB {
     }
 
     public void mirrorAbout(Direction.Axis axis) {
-        Vec3i axisVec = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, axis).getDirectionVec();
+        Vector3i axisVec = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, axis).getDirectionVec();
         int flipX = axisVec.getX() - 1;
         int flipY = axisVec.getY() - 1;
         int flipZ = axisVec.getZ() - 1;

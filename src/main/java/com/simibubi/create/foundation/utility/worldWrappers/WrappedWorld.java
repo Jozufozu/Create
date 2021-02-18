@@ -3,6 +3,7 @@ package com.simibubi.create.foundation.utility.worldWrappers;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -14,14 +15,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.tags.ITagCollectionSupplier;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -35,17 +39,19 @@ import net.minecraft.world.storage.MapData;
 public class WrappedWorld extends World {
 
 	protected World world;
+	public AbstractChunkProvider chunkProvider;
 
 	public WrappedWorld(World world, WrappedChunkProvider provider) {
-		super(world.getWorldInfo(), world.getDimension().getType(), (w, d) -> provider,
-				world.getProfiler(), world.isRemote);
+		super((ISpawnWorldInfo) world.getWorldInfo(), world.getRegistryKey(), world.getDimension(), world::getProfiler, world.isRemote, false, 0);
 		this.world = world;
+		this.chunkProvider = provider;
 	}
 
 	public WrappedWorld(World world) {
 		super((ISpawnWorldInfo) world.getWorldInfo(), world.getRegistryKey(), world.getDimension(),
 			world::getProfiler, world.isRemote, world.isDebugWorld(), 0);
 		this.world = world;
+		this.chunkProvider = world.getChunkProvider();
 	}
 
 	// FIXME
@@ -57,11 +63,6 @@ public class WrappedWorld extends World {
 	@Override
 	public WorldLightManager getLightingProvider() {
 		return super.getLightingProvider();
-	}
-
-	@Override
-	public World getWorld() {
-		return world;
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public class WrappedWorld extends World {
 
 	@Override
 	public AbstractChunkProvider getChunkProvider() {
-		return world.getChunkProvider(); // fixme
+		return chunkProvider;
 	}
 
 	@Override

@@ -12,7 +12,9 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
@@ -72,8 +74,8 @@ public class SuperByteBuffer extends TemplateBuffer {
 		((Buffer) buffer).rewind();
 
 		Matrix3f normalMat = transforms.peek()
-								  .getNormal()
-								  .copy();
+									   .getNormal()
+									   .copy();
 		//normalMat.multiply(transforms.peek().getNormal());
 
 		Matrix4f modelMat = input.peek()

@@ -10,9 +10,9 @@ import com.simibubi.create.foundation.utility.WorldAttached;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntity;
@@ -83,11 +83,11 @@ public class FastRenderDispatcher {
 
         layer.startDrawing();
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
-        GL11.glCullFace(GL11.GL_BACK);
+//        RenderSystem.enableDepthTest();
+//        RenderSystem.enableCull();
+//        GL11.glCullFace(GL11.GL_BACK);
         CreateClient.kineticRenderer.render(layer, viewProjection, cameraX, cameraY, cameraZ);
-        RenderSystem.disableCull();
+//        RenderSystem.disableCull();
         //RenderSystem.disableDepthTest();
 
         layer.endDrawing();
@@ -103,20 +103,16 @@ public class FastRenderDispatcher {
         ClientPlayerEntity player = mc.player;
 
         MatrixStack matrixstack = new MatrixStack();
-        matrixstack.peek().getModel().multiply(gameRenderer.func_228382_a_(gameRenderer.getActiveRenderInfo(), partialTicks, true));
+        matrixstack.peek().getModel().multiply(gameRenderer.getBasicProjectionMatrix(gameRenderer.getActiveRenderInfo(), partialTicks, true));
         gameRenderer.bobViewWhenHurt(matrixstack, partialTicks);
         if (mc.gameSettings.viewBobbing) {
             gameRenderer.bobView(matrixstack, partialTicks);
         }
 
-        float portalTime = MathHelper.lerp(partialTicks, player.prevTimeInPortal, player.timeInPortal);
-        if (portalTime > 0.0F) {
-            int i = 20;
-            if (player.isPotionActive(Effects.NAUSEA)) {
-                i = 7;
-            }
-
-            float f1 = 5.0F / (portalTime * portalTime + 5.0F) - portalTime * 0.04F;
+        float f = MathHelper.lerp(partialTicks, player.prevTimeInPortal, player.timeInPortal) * mc.gameSettings.distortionEffectScale * mc.gameSettings.distortionEffectScale;
+        if (f > 0.0F) {
+            int i = player.isPotionActive(Effects.NAUSEA) ? 7 : 20;
+            float f1 = 5.0F / (f * f + 5.0F) - f * 0.04F;
             f1 = f1 * f1;
             Vector3f vector3f = new Vector3f(0.0F, MathHelper.SQRT_2 / 2.0F, MathHelper.SQRT_2 / 2.0F);
             matrixstack.multiply(vector3f.getDegreesQuaternion(((float)gameRenderer.rendererUpdateCount + partialTicks) * (float)i));
@@ -125,10 +121,7 @@ public class FastRenderDispatcher {
             matrixstack.multiply(vector3f.getDegreesQuaternion(f2));
         }
 
-        Matrix4f matrix4f = matrixstack.peek().getModel();
-        gameRenderer.func_228379_a_(matrix4f);
-
-        projectionMatrixThisFrame = matrix4f;
+        projectionMatrixThisFrame = matrixstack.peek().getModel();
         return projectionMatrixThisFrame;
     }
 }

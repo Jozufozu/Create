@@ -62,7 +62,7 @@ public interface IPlacementHelper {
 	}
 
 	/*@OnlyIn(Dist.CLIENT)
-	static void renderArrow(Vec3d center, Direction towards, BlockRayTraceResult ray) {
+	static void renderArrow(Vector3d center, Direction towards, BlockRayTraceResult ray) {
 		Direction hitFace = ray.getFace();
 
 		if (hitFace.getAxis() == towards.getAxis())
@@ -70,11 +70,11 @@ public interface IPlacementHelper {
 
 		//get the two perpendicular directions to form the arrow
 		Direction[] directions = Arrays.stream(Direction.Axis.values()).filter(axis -> axis != hitFace.getAxis() && axis != towards.getAxis()).map(Iterate::directionsInAxis).findFirst().orElse(new Direction[]{});
-		Vec3d startOffset = new Vec3d(towards.getDirectionVec());
-		Vec3d start = center.add(startOffset);
+		Vector3d startOffset = new Vector3d(towards.getDirectionVec());
+		Vector3d start = center.add(startOffset);
 		for (Direction dir : directions) {
-			Vec3d arrowOffset = new Vec3d(dir.getDirectionVec()).scale(.25);
-			Vec3d target = center.add(startOffset.scale(0.75)).add(arrowOffset);
+			Vector3d arrowOffset = new Vector3d(dir.getDirectionVec()).scale(.25);
+			Vector3d target = center.add(startOffset.scale(0.75)).add(arrowOffset);
 			CreateClient.outliner.showLine("placementArrow" + towards + dir, start, target).lineWidth(1/16f);
 		}
 	}*/

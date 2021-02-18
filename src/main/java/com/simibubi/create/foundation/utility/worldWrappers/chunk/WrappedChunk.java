@@ -8,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +20,7 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 
 import javax.annotation.Nullable;
@@ -122,12 +123,12 @@ public class WrappedChunk implements IChunk {
     }
 
     @Override
-    public Map<String, StructureStart> getStructureStarts() {
+    public Map<Structure<?>, StructureStart<?>> getStructureStarts() {
         return null;
     }
 
     @Override
-    public void setStructureStarts(Map<String, StructureStart> p_201612_1_) {
+    public void setStructureStarts(Map<Structure<?>, StructureStart<?>> p_201612_1_) {
 
     }
 
@@ -221,38 +222,38 @@ public class WrappedChunk implements IChunk {
     }
 
     @Override
-    public IFluidState getFluidState(BlockPos pos) {
+    public FluidState getFluidState(BlockPos pos) {
         return null;
     }
 
     @Nullable
     @Override
-    public StructureStart getStructureStart(String p_201585_1_) {
+    public StructureStart<?> getStructureStart(Structure<?> p_230342_1_) {
         return null;
     }
 
     @Override
-    public void putStructureStart(String p_201584_1_, StructureStart p_201584_2_) {
+    public void setStructureStart(Structure<?> p_230344_1_, StructureStart<?> p_230344_2_) {
 
     }
 
     @Override
-    public LongSet getStructureReferences(String p_201578_1_) {
+    public LongSet getStructureReferences(Structure<?> p_230346_1_) {
         return null;
     }
 
     @Override
-    public void addStructureReference(String p_201583_1_, long p_201583_2_) {
+    public void addStructureReference(Structure<?> p_230343_1_, long p_230343_2_) {
 
     }
 
     @Override
-    public Map<String, LongSet> getStructureReferences() {
+    public Map<Structure<?>, LongSet> getStructureReferences() {
         return null;
     }
 
     @Override
-    public void setStructureReferences(Map<String, LongSet> p_201606_1_) {
+    public void setStructureReferences(Map<Structure<?>, LongSet> p_201606_1_) {
 
     }
 }

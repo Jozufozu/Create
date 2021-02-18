@@ -21,10 +21,12 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GraphicsFanciness;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.SectionPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.Template;
@@ -34,6 +36,7 @@ import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL40;
 
 import java.lang.ref.WeakReference;
@@ -46,7 +49,7 @@ public class ContraptionRenderDispatcher {
 
     private static boolean firstLayer = true;
 
-    public static void notifyLightUpdate(ILightReader world, LightType type, SectionPos pos) {
+    public static void notifyLightUpdate(IBlockDisplayReader world, LightType type, SectionPos pos) {
         for (RenderedContraption renderer : renderers.values()) {
             renderer.getLighter().lightVolume.notifyLightUpdate(world, type, pos);
         }
@@ -185,7 +188,7 @@ public class ContraptionRenderDispatcher {
     }
 
     public static BufferBuilder buildStructure(Contraption c, RenderType layer) {
-        if (renderWorld == null || renderWorld.getWorld() != Minecraft.getInstance().world)
+        if (renderWorld == null || renderWorld.getWrappedWorld() != Minecraft.getInstance().world)
             renderWorld = new PlacementSimulationWorld(Minecraft.getInstance().world);
 
         ForgeHooksClient.setRenderLayer(layer);
