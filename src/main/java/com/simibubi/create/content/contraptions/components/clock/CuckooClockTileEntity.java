@@ -1,9 +1,5 @@
 package com.simibubi.create.content.contraptions.components.clock;
 
-import static com.simibubi.create.foundation.utility.AngleHelper.deg;
-import static com.simibubi.create.foundation.utility.AngleHelper.getShortestAngleDiff;
-import static com.simibubi.create.foundation.utility.AngleHelper.rad;
-
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.foundation.advancement.AllTriggers;
 import com.simibubi.create.foundation.gui.widgets.InterpolatedChasingValue;
@@ -22,6 +18,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
+
+import static com.simibubi.create.foundation.utility.AngleHelper.*;
 
 public class CuckooClockTileEntity extends KineticTileEntity {
 
@@ -96,9 +94,9 @@ public class CuckooClockTileEntity extends KineticTileEntity {
 			moveHands(hours, minutes);
 
 			if (animationType == Animation.NONE) {
-				if (AnimationTickHolder.ticks % 32 == 0)
+				if (AnimationTickHolder.getTicks() % 32 == 0)
 					playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, 1 / 16f, 2f);
-				else if (AnimationTickHolder.ticks % 16 == 0)
+				else if (AnimationTickHolder.getTicks() % 16 == 0)
 					playSound(SoundEvents.BLOCK_NOTE_BLOCK_HAT, 1 / 16f, 1.5f);
 			} else {
 
@@ -173,4 +171,8 @@ public class CuckooClockTileEntity extends KineticTileEntity {
 		world.playSound(vec.x, vec.y, vec.z, sound, SoundCategory.BLOCKS, volume, pitch, false);
 	}
 
+	@Override
+	public boolean shouldRenderAsTE() {
+		return true;
+	}
 }

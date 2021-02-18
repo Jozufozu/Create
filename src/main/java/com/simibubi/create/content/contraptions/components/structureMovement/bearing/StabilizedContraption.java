@@ -2,7 +2,8 @@ package com.simibubi.create.content.contraptions.components.structureMovement.be
 
 import com.simibubi.create.content.contraptions.components.structureMovement.AllContraptionTypes;
 import com.simibubi.create.content.contraptions.components.structureMovement.Contraption;
-
+import com.simibubi.create.content.contraptions.components.structureMovement.NonStationaryLighter;
+import com.simibubi.create.content.contraptions.components.structureMovement.ContraptionLighter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -25,12 +26,11 @@ public class StabilizedContraption extends Contraption {
 		if (!searchMovedStructure(world, offset, null))
 			return false;
 		startMoving(world);
-		expandBoundsAroundAxis(Axis.Y);
 		if (blocks.isEmpty())
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	protected boolean isAnchoringBlockAt(BlockPos pos) {
 		return false;
@@ -63,4 +63,8 @@ public class StabilizedContraption extends Contraption {
 		return facing;
 	}
 
+	@Override
+	public ContraptionLighter<?> makeLighter() {
+		return new NonStationaryLighter<>(this);
+	}
 }

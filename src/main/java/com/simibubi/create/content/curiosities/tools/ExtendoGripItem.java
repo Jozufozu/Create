@@ -7,7 +7,7 @@ import com.google.common.collect.Multimap;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.advancement.AllTriggers;
 import com.simibubi.create.foundation.networking.AllPackets;
-
+import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
@@ -40,12 +40,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+import java.util.UUID;
+
 @EventBusSubscriber
 public class ExtendoGripItem extends Item {
 	private static DamageSource lastActiveDamageSource;
 
-	static LazyValue<Multimap<Attribute, AttributeModifier>> rangeModifier = 
-		new LazyValue<Multimap<Attribute, AttributeModifier>>(() -> 
+	static LazyValue<Multimap<Attribute, AttributeModifier>> rangeModifier =
+		new LazyValue<Multimap<Attribute, AttributeModifier>>(() ->
 			// Holding an ExtendoGrip
 			ImmutableMultimap.of(
 				ForgeMod.REACH_DISTANCE.get(),
@@ -53,8 +55,8 @@ public class ExtendoGripItem extends Item {
 					AttributeModifier.Operation.ADDITION))
 		);
 
-	static LazyValue<Multimap<Attribute, AttributeModifier>> doubleRangeModifier = 
-		new LazyValue<Multimap<Attribute, AttributeModifier>>(() -> 
+	static LazyValue<Multimap<Attribute, AttributeModifier>> doubleRangeModifier =
+		new LazyValue<Multimap<Attribute, AttributeModifier>>(() ->
 			// Holding two ExtendoGrips o.O
 			ImmutableMultimap.of(
 				ForgeMod.REACH_DISTANCE.get(),
@@ -131,7 +133,7 @@ public class ExtendoGripItem extends Item {
 			.getValue();
 		if (!player.isCreative())
 			d0 -= 0.5f;
-		Vector3d Vector3d = player.getEyePosition(mc.getRenderPartialTicks());
+		Vector3d Vector3d = player.getEyePosition(AnimationTickHolder.getPartialTicks());
 		Vector3d Vector3d1 = player.getLook(1.0F);
 		Vector3d Vector3d2 = Vector3d.add(Vector3d1.x * d0, Vector3d1.y * d0, Vector3d1.z * d0);
 		AxisAlignedBB axisalignedbb = player.getBoundingBox()

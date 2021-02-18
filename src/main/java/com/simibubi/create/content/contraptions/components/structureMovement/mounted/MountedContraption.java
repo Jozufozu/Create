@@ -1,20 +1,15 @@
 package com.simibubi.create.content.contraptions.components.structureMovement.mounted;
 
-import static com.simibubi.create.content.contraptions.components.structureMovement.mounted.CartAssemblerBlock.RAIL_SHAPE;
-
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.contraptions.components.structureMovement.AllContraptionTypes;
 import com.simibubi.create.content.contraptions.components.structureMovement.Contraption;
+import com.simibubi.create.content.contraptions.components.structureMovement.NonStationaryLighter;
 import com.simibubi.create.content.contraptions.components.structureMovement.mounted.CartAssemblerTileEntity.CartMovementMode;
 import com.simibubi.create.foundation.utility.BlockHelper;
+import com.simibubi.create.content.contraptions.components.structureMovement.ContraptionLighter;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
@@ -33,6 +28,11 @@ import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+
+import static com.simibubi.create.content.contraptions.components.structureMovement.mounted.CartAssemblerBlock.RAIL_SHAPE;
 
 public class MountedContraption extends Contraption {
 
@@ -160,5 +160,10 @@ public class MountedContraption extends Contraption {
 			return;
 		IItemHandlerModifiable handlerFromInv = new InvWrapper((IInventory) cart);
 		inventory = new CombinedInvWrapper(handlerFromInv, inventory);
+	}
+
+	@Override
+	public ContraptionLighter<?> makeLighter() {
+		return new NonStationaryLighter<>(this);
 	}
 }

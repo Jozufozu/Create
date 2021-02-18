@@ -25,6 +25,7 @@ import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.storage.ISpawnWorldInfo;
 import net.minecraft.world.storage.MapData;
@@ -35,6 +36,12 @@ public class WrappedWorld extends World {
 
 	protected World world;
 
+	public WrappedWorld(World world, WrappedChunkProvider provider) {
+		super(world.getWorldInfo(), world.getDimension().getType(), (w, d) -> provider,
+				world.getProfiler(), world.isRemote);
+		this.world = world;
+	}
+
 	public WrappedWorld(World world) {
 		super((ISpawnWorldInfo) world.getWorldInfo(), world.getRegistryKey(), world.getDimension(),
 			world::getProfiler, world.isRemote, world.isDebugWorld(), 0);
@@ -44,6 +51,16 @@ public class WrappedWorld extends World {
 	// FIXME
 	// @Override
 	public World getWrappedWorld() {
+		return world;
+	}
+
+	@Override
+	public WorldLightManager getLightingProvider() {
+		return super.getLightingProvider();
+	}
+
+	@Override
+	public World getWorld() {
 		return world;
 	}
 

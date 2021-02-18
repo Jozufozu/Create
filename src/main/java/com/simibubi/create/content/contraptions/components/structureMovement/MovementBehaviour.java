@@ -2,6 +2,7 @@ package com.simibubi.create.content.contraptions.components.structureMovement;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import com.simibubi.create.content.contraptions.components.structureMovement.render.RenderedContraption;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -47,8 +48,12 @@ public abstract class MovementBehaviour {
 
 	}
 
-	public boolean hasSpecialMovementRenderer() {
-		return true;
+	public boolean renderAsNormalTileEntity() {
+		return false;
+	}
+
+	public boolean hasSpecialInstancedRendering() {
+		return false;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -58,4 +63,7 @@ public abstract class MovementBehaviour {
 	public void onSpeedChanged(MovementContext context, Vector3d oldMotion, Vector3d motion) {
 
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void addInstance(RenderedContraption contraption, MovementContext context) {}
 }

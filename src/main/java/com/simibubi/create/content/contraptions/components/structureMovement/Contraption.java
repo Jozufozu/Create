@@ -1,26 +1,5 @@
 package com.simibubi.create.content.contraptions.components.structureMovement;
 
-import static com.simibubi.create.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.isExtensionPole;
-import static com.simibubi.create.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.isPistonHead;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
@@ -45,21 +24,14 @@ import com.simibubi.create.content.logistics.block.inventories.AdjustableCrateBl
 import com.simibubi.create.content.logistics.block.redstone.RedstoneContactBlock;
 import com.simibubi.create.foundation.config.AllConfigs;
 import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
+import com.simibubi.create.foundation.render.backend.light.EmptyLighter;
 import com.simibubi.create.foundation.utility.BlockFace;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.NBTHelper;
 import com.simibubi.create.foundation.utility.VecHelper;
 import com.simibubi.create.foundation.utility.worldWrappers.WrappedWorld;
-
-import net.minecraft.block.AbstractButtonBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.PressurePlateBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -81,6 +53,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
@@ -90,6 +64,16 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import static com.simibubi.create.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.isExtensionPole;
+import static com.simibubi.create.content.contraptions.components.structureMovement.piston.MechanicalPistonBlock.isPistonHead;
 
 public abstract class Contraption {
 
@@ -115,7 +99,8 @@ public abstract class Contraption {
 
 	// Client
 	public Map<BlockPos, TileEntity> presentTileEntities;
-	public List<TileEntity> renderedTileEntities;
+	public List<TileEntity> maybeInstancedTileEntities;
+	public List<TileEntity> specialRenderedTileEntities;
 
 	public Contraption() {
 		blocks = new HashMap<>();
@@ -128,7 +113,8 @@ public abstract class Contraption {
 		glueToRemove = new ArrayList<>();
 		initialPassengers = new HashMap<>();
 		presentTileEntities = new HashMap<>();
-		renderedTileEntities = new ArrayList<>();
+		maybeInstancedTileEntities = new ArrayList<>();
+		specialRenderedTileEntities = new ArrayList<>();
 		pendingSubContraptions = new ArrayList<>();
 		stabilizedSubContraptions = new HashMap<>();
 	}
@@ -517,7 +503,7 @@ public abstract class Contraption {
 	public void readNBT(World world, CompoundNBT nbt, boolean spawnData) {
 		blocks.clear();
 		presentTileEntities.clear();
-		renderedTileEntities.clear();
+		specialRenderedTileEntities.clear();
 
 		nbt.getList("Blocks", 10)
 			.forEach(c -> {
@@ -531,7 +517,7 @@ public abstract class Contraption {
 					Block block = info.state.getBlock();
 					CompoundNBT tag = info.nbt;
 					MovementBehaviour movementBehaviour = AllMovementBehaviours.of(block);
-					if (tag == null || (movementBehaviour != null && movementBehaviour.hasSpecialMovementRenderer()))
+					if (tag == null)
 						return;
 
 					tag.putInt("x", info.pos.getX());
@@ -554,8 +540,15 @@ public abstract class Contraption {
 					if (te instanceof KineticTileEntity)
 						((KineticTileEntity) te).setSpeed(0);
 					te.getBlockState();
+
+					if (movementBehaviour == null || !movementBehaviour.hasSpecialInstancedRendering())
+						maybeInstancedTileEntities.add(te);
+
+					if (movementBehaviour != null && !movementBehaviour.renderAsNormalTileEntity())
+						return;
+
 					presentTileEntities.put(info.pos, te);
-					renderedTileEntities.add(te);
+					specialRenderedTileEntities.add(te);
 				}
 			});
 
@@ -573,7 +566,8 @@ public abstract class Contraption {
 			.add(Pair.of(NBTUtil.readBlockPos(c.getCompound("Pos")), Direction.byIndex(c.getByte("Direction")))));
 
 		seats.clear();
-		NBTHelper.iterateCompoundList(nbt.getList("Seats", NBT.TAG_COMPOUND), c -> seats.add(NBTUtil.readBlockPos(c)));
+		NBTHelper.iterateCompoundList(nbt.getList("Seats", NBT.TAG_COMPOUND), c -> seats.add
+				(NBTUtil.readBlockPos(c)));
 
 		seatMapping.clear();
 		NBTHelper.iterateCompoundList(nbt.getList("Passengers", NBT.TAG_COMPOUND),
@@ -954,6 +948,11 @@ public abstract class Contraption {
 		MountedFluidStorage mountedFluidStorage = fluidStorage.get(localPos);
 		if (mountedFluidStorage != null)
 			mountedFluidStorage.updateFluid(containedFluid);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public ContraptionLighter<?> makeLighter() {
+		return new EmptyLighter(this);
 	}
 
 }

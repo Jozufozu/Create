@@ -394,4 +394,8 @@ public class ClockworkBearingTileEntity extends KineticTileEntity implements IBe
 		return pos;
 	}
 
+	@Override
+	public boolean shouldRenderAsTE() {
+		return true;
+	}
 }

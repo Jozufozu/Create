@@ -3,8 +3,9 @@ package com.simibubi.create.content.contraptions.relays.advanced;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.contraptions.base.KineticTileEntityRenderer;
+import com.simibubi.create.foundation.render.backend.FastRenderDispatcher;
 import com.simibubi.create.foundation.tileEntity.renderer.SmartTileEntityRenderer;
-import com.simibubi.create.foundation.utility.SuperByteBuffer;
+import com.simibubi.create.foundation.render.SuperByteBuffer;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -21,6 +22,8 @@ public class SpeedControllerRenderer extends SmartTileEntityRenderer<SpeedContro
 			IRenderTypeBuffer buffer, int light, int overlay) {
 		super.renderSafe(tileEntityIn, partialTicks, ms, buffer, light, overlay);
 
+		if (FastRenderDispatcher.available(tileEntityIn.getWorld())) return;
+
 		KineticTileEntityRenderer.renderRotatingBuffer(tileEntityIn, getRotatedModel(tileEntityIn), ms,
 				buffer.getBuffer(RenderType.getSolid()), light);
 	}
@@ -31,3 +34,4 @@ public class SpeedControllerRenderer extends SmartTileEntityRenderer<SpeedContro
 	}
 
 }
+
