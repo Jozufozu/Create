@@ -2,13 +2,13 @@ package com.simibubi.create.foundation.render.backend;
 
 import java.nio.ByteBuffer;
 
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
 import com.simibubi.create.foundation.render.TemplateBuffer;
 import com.simibubi.create.foundation.render.backend.gl.GlBuffer;
 import com.simibubi.create.foundation.render.backend.gl.GlPrimitiveType;
-import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 
 import net.minecraft.client.renderer.BufferBuilder;
 
@@ -68,7 +68,7 @@ public abstract class BufferedModel extends TemplateBuffer {
 
     protected abstract void copyVertex(ByteBuffer to, int index);
 
-    protected abstract VertexFormat getModelFormat();
+    protected abstract BufferFormat getModelFormat();
 
     protected int getTotalShaderAttributeCount() {
         return getModelFormat().getShaderAttributeCount();

@@ -1,5 +1,6 @@
 package com.simibubi.create.content.contraptions.base;
 
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedModel;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedTileRenderer;
@@ -17,8 +18,7 @@ public class RotatingInstancedModel extends InstancedModel<RotatingData> {
     }
 
     @Override
-    protected VertexFormat getInstanceFormat() {
+    protected BufferFormat getInstanceFormat() {
         return RotatingData.FORMAT;
     }
-
 }

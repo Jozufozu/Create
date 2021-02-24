@@ -85,7 +85,7 @@ public abstract class GlProgram extends GlObject {
 
         public <A extends IVertexAttrib> Builder addAttribute(A attrib) {
             GL20.glBindAttribLocation(this.program, attributeIndex, attrib.attribName());
-            attributeIndex += attrib.attribSpec().getAttributeCount();
+            attributeIndex += attrib.attribSpec().getShaderAttributeCount();
             return this;
         }
 

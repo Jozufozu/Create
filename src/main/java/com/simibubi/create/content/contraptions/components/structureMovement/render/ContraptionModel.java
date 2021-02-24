@@ -3,13 +3,14 @@ package com.simibubi.create.content.contraptions.components.structureMovement.re
 import java.nio.ByteBuffer;
 
 import com.simibubi.create.foundation.render.backend.BufferedModel;
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.LightTexture;
 
 public class ContraptionModel extends BufferedModel {
-    public static final VertexFormat FORMAT = VertexFormat.builder()
+    public static final BufferFormat FORMAT = BufferFormat.builder()
                                                              .addAttributes(ContraptionVertexAttributes.class)
                                                              .build();
 
@@ -45,7 +46,7 @@ public class ContraptionModel extends BufferedModel {
     }
 
     @Override
-    protected VertexFormat getModelFormat() {
+    protected BufferFormat getModelFormat() {
         return FORMAT;
     }
 }

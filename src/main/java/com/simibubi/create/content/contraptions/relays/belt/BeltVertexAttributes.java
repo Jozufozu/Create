@@ -34,8 +34,4 @@ public enum BeltVertexAttributes implements IVertexAttrib {
         return 1;
     }
 
-    @Override
-    public int getBufferIndex() {
-        return 1;
-    }
 }

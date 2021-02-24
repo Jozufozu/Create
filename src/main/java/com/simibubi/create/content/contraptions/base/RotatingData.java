@@ -2,6 +2,7 @@ package com.simibubi.create.content.contraptions.base;
 
 import java.nio.ByteBuffer;
 
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedModel;
 
@@ -9,7 +10,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 
 public class RotatingData extends KineticData<RotatingData> {
-    public static VertexFormat FORMAT = VertexFormat.builder()
+    public static BufferFormat FORMAT = BufferFormat.builder()
                                                     .addAttributes(KineticVertexAttributes.class)
                                                     .addAttributes(RotatingVertexAttributes.class)
                                                     .build();

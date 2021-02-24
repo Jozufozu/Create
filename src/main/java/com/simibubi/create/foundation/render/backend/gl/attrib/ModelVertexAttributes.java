@@ -29,8 +29,4 @@ public enum ModelVertexAttributes implements IVertexAttrib {
         return 0;
     }
 
-    @Override
-    public int getBufferIndex() {
-        return 0;
-    }
 }

@@ -32,7 +32,7 @@ public class VertexAttribSpec {
         return size;
     }
 
-    public int getAttributeCount() {
+    public int getShaderAttributeCount() {
         return attributeCount;
     }
 }

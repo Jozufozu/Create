@@ -3,63 +3,48 @@ package com.simibubi.create.foundation.render.backend.gl.attrib;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class VertexFormat {
+public abstract class VertexFormat {
 
-    private final ArrayList<IVertexAttrib> allAttributes;
+    protected final ArrayList<BufferFormat> buffers;
 
-    private final int numAttributes;
-    private final int stride;
+    protected final int shaderAttributeCount;
 
-    public VertexFormat(ArrayList<IVertexAttrib> allAttributes) {
-        this.allAttributes = allAttributes;
+    public VertexFormat() {
+        FormatBuilder formatBuilder = new FormatBuilder(bufferCount());
+        setup(formatBuilder);
 
-        int numAttributes = 0, stride = 0;
-        for (IVertexAttrib attrib : allAttributes) {
-            VertexAttribSpec spec = attrib.attribSpec();
-            numAttributes += spec.getAttributeCount();
-            stride += spec.getSize();
+        buffers = new ArrayList<>(formatBuilder.buffers.size());
+        for (ArrayList<IVertexAttrib> buffer : formatBuilder.buffers) {
+            buffers.add(new BufferFormat(buffer));
         }
-        this.numAttributes = numAttributes;
-        this.stride = stride;
+
+        shaderAttributeCount = buffers.stream().reduce(0, (integer, bufferFormat) -> bufferFormat.shaderAttributeCount, Integer::sum);
     }
+
+    public abstract int bufferCount();
+
+    protected abstract void setup(FormatBuilder formatBuilder);
 
     public int getShaderAttributeCount() {
-        return numAttributes;
+        return shaderAttributeCount;
     }
 
-    public int getStride() {
-        return stride;
-    }
+    public static class FormatBuilder {
+        protected final ArrayList<ArrayList<IVertexAttrib>> buffers = new ArrayList<>();
 
-    public void vertexAttribPointers(int index) {
-        int offset = 0;
-        for (IVertexAttrib attrib : this.allAttributes) {
-            VertexAttribSpec spec = attrib.attribSpec();
-            spec.vertexAttribPointer(stride, index, offset);
-            index += spec.getAttributeCount();
-            offset += spec.getSize();
+        public FormatBuilder(int numBuffers) {
+            for (int i = 0; i < numBuffers; i++) {
+                buffers.add(new ArrayList<>());
+            }
+        }
+
+        public <A extends Enum<A> & IVertexAttrib> void addAttributes(Class<A> attribEnum) {
+            addAttributes(attribEnum, 0);
+        }
+
+        public <A extends Enum<A> & IVertexAttrib> void addAttributes(Class<A> attribEnum, int bufferIndex) {
+            buffers.get(bufferIndex).addAll(Arrays.asList(attribEnum.getEnumConstants()));
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-
-    public static class Builder {
-        private final ArrayList<IVertexAttrib> allAttributes;
-
-        public Builder() {
-            allAttributes = new ArrayList<>();
-        }
-
-        public <A extends Enum<A> & IVertexAttrib> Builder addAttributes(Class<A> attribEnum) {
-            allAttributes.addAll(Arrays.asList(attribEnum.getEnumConstants()));
-            return this;
-        }
-
-        public VertexFormat build() {
-            return new VertexFormat(allAttributes);
-        }
-    }
 }

@@ -31,8 +31,4 @@ public enum RotatingVertexAttributes implements IVertexAttrib {
         return 1;
     }
 
-    @Override
-    public int getBufferIndex() {
-        return 1;
-    }
 }

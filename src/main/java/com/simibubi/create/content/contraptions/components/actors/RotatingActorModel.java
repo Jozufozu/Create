@@ -1,5 +1,6 @@
 package com.simibubi.create.content.contraptions.components.actors;
 
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedModel;
 import com.simibubi.create.foundation.render.backend.instancing.InstancedTileRenderer;
@@ -12,7 +13,7 @@ public class RotatingActorModel extends InstancedModel<ContraptionActorData> {
     }
 
     @Override
-    protected VertexFormat getInstanceFormat() {
+    protected BufferFormat getInstanceFormat() {
         return ContraptionActorData.FORMAT;
     }
 

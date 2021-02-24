@@ -8,5 +8,4 @@ public interface IVertexAttrib {
 
     int getDivisor();
 
-    int getBufferIndex();
 }

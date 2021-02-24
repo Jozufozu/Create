@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import com.simibubi.create.foundation.render.backend.Backend;
+import com.simibubi.create.foundation.render.backend.gl.attrib.BufferFormat;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -20,7 +21,7 @@ import com.simibubi.create.foundation.render.backend.gl.attrib.VertexFormat;
 import net.minecraft.client.renderer.BufferBuilder;
 
 public abstract class InstancedModel<D extends InstanceData> extends BufferedModel {
-    public static final VertexFormat FORMAT = VertexFormat.builder().addAttributes(ModelVertexAttributes.class).build();
+    public static final BufferFormat FORMAT = BufferFormat.builder().addAttributes(ModelVertexAttributes.class).build();
 
     public final InstancedTileRenderer<?> renderer;
 
@@ -122,7 +123,7 @@ public abstract class InstancedModel<D extends InstanceData> extends BufferedMod
     protected void renderSetup() {
         if (minIndexChanged < 0 || data.isEmpty()) return;
 
-        VertexFormat instanceFormat = getInstanceFormat();
+        BufferFormat instanceFormat = getInstanceFormat();
 
         int stride = instanceFormat.getStride();
         int newInstanceCount = instanceCount();
@@ -209,11 +210,11 @@ public abstract class InstancedModel<D extends InstanceData> extends BufferedMod
     }
 
     @Override
-    protected VertexFormat getModelFormat() {
+    protected BufferFormat getModelFormat() {
         return FORMAT;
     }
 
-    protected abstract VertexFormat getInstanceFormat();
+    protected abstract BufferFormat getInstanceFormat();
 
     protected int getTotalShaderAttributeCount() {
         return getInstanceFormat().getShaderAttributeCount() + super.getTotalShaderAttributeCount();
