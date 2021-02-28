@@ -116,7 +116,7 @@ public abstract class InstancedModel<D extends InstanceData> extends BufferedMod
     protected void doRender() {
         vao.with(vao -> {
             renderSetup();
-            Backend.functions.drawArraysInstanced(GL11.GL_QUADS, 0, vertexCount, glInstanceCount);
+            Backend.compat.drawArraysInstanced(GL11.GL_QUADS, 0, vertexCount, glInstanceCount);
         });
     }
 
@@ -163,7 +163,7 @@ public abstract class InstancedModel<D extends InstanceData> extends BufferedMod
             instanceFormat.vertexAttribPointers(staticAttributes);
 
             for (int i = 0; i < instanceFormat.getShaderAttributeCount(); i++) {
-                Backend.functions.vertexAttribDivisor(i + staticAttributes, 1);
+                Backend.compat.vertexAttribDivisor(i + staticAttributes, 1);
             }
         });
 
